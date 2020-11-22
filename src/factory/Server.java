@@ -31,10 +31,10 @@ public class Server {
 	}
 	
 	@WebMethod
-	public boolean insertNewAddStockRequest(String chocName, int amountChoc) throws SQLException {
+	public boolean insertNewAddStockRequest(int chocId, int amountChoc) throws SQLException {
 		boolean inserted = false;
 		try {
-			db.insertToAddStock(chocName, amountChoc, "pending");
+			db.insertToAddStock(chocId, amountChoc, "pending");
 			inserted = true;
 		}
 		catch (Exception e) {
@@ -43,4 +43,63 @@ public class Server {
 		return inserted;
 	}
 	
+	@WebMethod
+	public boolean login(String email, String password) throws SQLException {
+		boolean valid = false;
+		try {
+			valid = db.login(email,password);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return valid;
+		
+	}
+	@WebMethod
+	public boolean changeStatusAddStock(int idAddStock) throws SQLException {
+		boolean valid = false;
+		
+		try {
+			db.changeStatusAddStock(idAddStock);
+			valid = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return valid;
+	}
+	
+	@WebMethod
+	public boolean addSaldo(int saldo) throws SQLException{
+		boolean valid = false;
+		try {
+			db.addSaldo(saldo);
+			valid = true;
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return valid;
+	}
+	
+	@WebMethod
+	public int getSaldo() throws SQLException{
+		int saldo = -1;
+		try {
+			saldo = db.getSaldo();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return saldo;
+	}
+	@WebMethod
+	public boolean addBahan(int idBahan, String namaBahan, int jumlah) throws SQLException {
+		boolean valid = false;
+		try {
+			db.addBahan(idBahan, namaBahan, jumlah);
+			valid = true;
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return valid;
+	}
 }

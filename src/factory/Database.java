@@ -104,18 +104,70 @@ public class Database {
 		return res;
 	}
 	
-	public void insertToAddStock(String chocName, int amount, String status) throws SQLException {
+	public void insertToAddStock(int chocId, int amount, String status) throws SQLException {
 		Connection conn = getConnection();
-		String query = "INSERT INTO add_stock (nama_coklat, jumlah, status) VALUES (?,?,?)";
+		String query = "INSERT INTO add_stock (id_cokelat, jumlah, status) VALUES (?,?,?)";
 		PreparedStatement preparedStmt = conn.prepareStatement(query);
-		preparedStmt.setString(1, chocName);
+		preparedStmt.setInt(1, chocId);
 		preparedStmt.setInt(2, amount);
 		preparedStmt.setString(3, status);
 		preparedStmt.execute();
 		conn.close();
 			
 	}
-
+	public boolean login(String email,String password) throws SQLException{
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT * FROM user WHERE email ="+email+" and password = "+password;
+		ResultSet rs = stmt.executeQuery(command);
+		if (rs.next()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public void changeStatusAddStock(int idAddStock) throws SQLException {
+		Connection conn = getConnection();
+		String command = "UPDATE add_stock SET status = 'delivered' WHERE id_add_stock = ?";
+		PreparedStatement preparedStmt = conn.prepareStatement(command);
+		preparedStmt.setInt(1, idAddStock);
+		preparedStmt.execute();
+		conn.close();
+	}
+	
+	public void addSaldo(int saldo) throws SQLException{
+		Connection conn = getConnection();
+		String command = "UPDATE saldo SET uang = uang + ?";
+		PreparedStatement preparedStmt = conn.prepareStatement(command);
+		preparedStmt.setInt(1, saldo);
+		preparedStmt.execute();
+		conn.close();
+	}
+	
+	public int getSaldo()throws SQLException{
+		int res = 0;
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT uang FROM saldo";
+		ResultSet rs = stmt.executeQuery(command);
+		if (rs.next()) {
+			res = rs.getInt("uang");
+		}
+		return res;
+		
+	}
+	
+	public void addBahan(int idBahan, String namaBahan,int jumlah) throws SQLException{
+		Connection conn = getConnection();
+		String command =  "INSERT INTO bahan (id_bahan, nama_bahan, jumlah, tanggal_kadaluwarsa) VALUES (?,?,?,'00-00-0000')";
+		PreparedStatement preparedStmt = conn.prepareStatement(command);
+		preparedStmt.setInt(1, idBahan);
+		preparedStmt.setString(2, namaBahan);
+		preparedStmt.setInt(3, jumlah);
+		preparedStmt.execute();
+		conn.close();
+	}
+	
 	/**
 	 * method coba2
 	 * Run a SQL command which does not return a recordset:
@@ -183,4 +235,6 @@ public class Database {
 			return;
 		}
 	}
+	
+	
 }
