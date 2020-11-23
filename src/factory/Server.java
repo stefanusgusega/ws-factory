@@ -92,14 +92,30 @@ public class Server {
 		return saldo;
 	}
 	@WebMethod
-	public boolean addBahan(int idBahan, String namaBahan, int jumlah) throws SQLException {
+	public boolean addBahan(int idBahan, String namaBahan,int jumlah) throws SQLException {
 		boolean valid = false;
 		try {
-			db.addBahan(idBahan, namaBahan, jumlah);
+			int i;
+//			for (i= 0; i< idBahan.length; i++) {
+				db.addBahan(idBahan, namaBahan, jumlah);
+					
+//			}
+			
 			valid = true;
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		return valid;
+	}
+	
+	@WebMethod
+	public Bahan[] getBahan() {
+		Bahan[] result = null;
+		try {
+			result = db.getBahan();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

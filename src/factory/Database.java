@@ -1,5 +1,4 @@
 package factory;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -118,7 +117,7 @@ public class Database {
 	public boolean login(String email,String password) throws SQLException{
 		Connection conn = getConnection();
 		Statement stmt = conn.createStatement();
-		String command = "SELECT * FROM user WHERE email ="+email+" and password = "+password;
+		String command = "SELECT * FROM user WHERE email ='"+email+"' and password = '"+password +"'";
 		ResultSet rs = stmt.executeQuery(command);
 		if (rs.next()) {
 			return true;
@@ -159,13 +158,45 @@ public class Database {
 	
 	public void addBahan(int idBahan, String namaBahan,int jumlah) throws SQLException{
 		Connection conn = getConnection();
-		String command =  "INSERT INTO bahan (id_bahan, nama_bahan, jumlah, tanggal_kadaluwarsa) VALUES (?,?,?,'00-00-0000')";
+		String command =  "INSERT INTO bahan (id_bahan, nama_bahan, jumlah, tanggal_kadaluwarsa) VALUES (?,?,?,?)";
 		PreparedStatement preparedStmt = conn.prepareStatement(command);
 		preparedStmt.setInt(1, idBahan);
 		preparedStmt.setString(2, namaBahan);
 		preparedStmt.setInt(3, jumlah);
+		preparedStmt.setString(4, "2020-02-02");
 		preparedStmt.execute();
 		conn.close();
+	}
+	
+	public int getRowBahan() throws SQLException{
+		int row = -1;
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String count = "SELECT count(*) as total FROM bahan";
+		ResultSet ct = stmt.executeQuery(count);
+		if (ct.next()) {
+			row = ct.getInt("total");
+		}
+		
+		return row;
+	}
+	public Bahan[] getBahan() throws SQLException {
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT * FROM bahan";
+		
+		
+		int row = this.getRowBahan();
+		ResultSet rs = stmt.executeQuery(command);
+		
+		Bahan[ ] arrayOfBahan = new Bahan[row];
+		int i = 0;
+		while(rs.next()) {
+			arrayOfBahan[i] =  new Bahan(rs.getInt("id_bahan"),rs.getString("nama_bahan"),rs.getInt("jumlah"),rs.getString("tanggal_kadaluwarsa"));
+			
+			i++;
+		}
+		return arrayOfBahan;
 	}
 	
 	/**
