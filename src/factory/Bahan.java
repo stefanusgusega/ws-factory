@@ -1,5 +1,9 @@
 package factory;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Bahan {
 	private int idBahan;
 	private String namaBahan;

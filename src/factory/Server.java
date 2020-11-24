@@ -113,6 +113,7 @@ public class Server {
 		Bahan[] result = null;
 		try {
 			result = db.getBahan();
+		
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
