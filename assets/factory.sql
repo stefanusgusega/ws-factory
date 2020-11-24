@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 22, 2020 at 12:48 PM
+-- Generation Time: Nov 24, 2020 at 03:56 AM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.4.11
 
@@ -33,6 +33,31 @@ CREATE TABLE `add_stock` (
   `jumlah` int(11) DEFAULT NULL,
   `status` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `add_stock`
+--
+
+INSERT INTO `add_stock` (`id_add_stock`, `id_cokelat`, `jumlah`, `status`) VALUES
+(1, 2, 22, 'pending'),
+(2, 9, 20, 'delivered'),
+(3, 22, 29, 'pending'),
+(4, 8, 39, 'pending'),
+(5, 8, 77, 'pending'),
+(6, 2, 2, 'pending'),
+(7, 7, 7, 'pending'),
+(8, 2, 2, 'pending'),
+(9, 4, 2, 'pending'),
+(10, 4, 1, 'pending'),
+(11, 3, 2, 'pending'),
+(12, 3, 3, 'pending'),
+(13, 4, 2, 'pending'),
+(14, 4, 2, 'pending'),
+(15, 4, 2, 'pending'),
+(16, 4, 2, 'pending'),
+(17, 4, 2, 'pending'),
+(18, 4, 2, 'pending'),
+(19, 4, 2, 'pending');
 
 -- --------------------------------------------------------
 
@@ -74,10 +99,7 @@ INSERT INTO `bahan` (`id_bahan`, `nama_bahan`, `jumlah`, `tanggal_kadaluwarsa`) 
 (21, 'baking soda', 50, '2022-10-01'),
 (22, 'gula aren', 50, '2022-10-01'),
 (23, 'telur', 50, '2022-10-01'),
-(24, 'milk choco', 50, '0000-00-00'),
-(25, 'white choco', 50, '0000-00-00'),
-(26, 'dark choco', 50, '0000-00-00'),
-(27, 'pewarna makanan', 50, '0000-00-00');
+(28, 'makanan', 10, '2020-02-02');
 
 -- --------------------------------------------------------
 
@@ -202,7 +224,7 @@ CREATE TABLE `saldo` (
 --
 
 INSERT INTO `saldo` (`uang`) VALUES
-(500000000);
+(500004912);
 
 -- --------------------------------------------------------
 
@@ -215,6 +237,13 @@ CREATE TABLE `user` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`username`, `email`, `password`) VALUES
+('superuser', 'superuser@admin.com', 'admin');
 
 --
 -- Indexes for dumped tables
@@ -254,23 +283,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `add_stock`
 --
 ALTER TABLE `add_stock`
-  MODIFY `id_add_stock` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `bahan`
---
-ALTER TABLE `bahan`
-  MODIFY `id_bahan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `resep`
---
-ALTER TABLE `resep`
-  ADD CONSTRAINT `fk_namabahan_tbl_resep` FOREIGN KEY (`nama_bahan`) REFERENCES `bahan` (`nama_bahan`);
+  MODIFY `id_add_stock` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
