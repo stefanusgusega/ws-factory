@@ -2,6 +2,7 @@ package factory;
 
 import javax.jws.WebService;
 import javax.jws.WebMethod;
+import javax.jws.WebParam;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 import java.sql.SQLException;
@@ -79,7 +80,18 @@ public class Server {
 		}
 		return valid;
 	}
-	
+	@WebMethod
+	public boolean setSaldo(int saldo) throws SQLException{
+		boolean valid =false;
+		try {
+			db.setSaldo(saldo);
+			valid = true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return valid;
+	}
 	@WebMethod
 	public int getSaldo() throws SQLException{
 		int saldo = -1;
@@ -92,14 +104,17 @@ public class Server {
 		return saldo;
 	}
 	@WebMethod
-	public boolean addBahan(int idBahan, String namaBahan,int jumlah) throws SQLException {
+	public boolean addBahan(@WebParam(name= "bahan") Bahan[] arrayBahan) throws SQLException {
 		boolean valid = false;
 		try {
 			int i;
-//			for (i= 0; i< idBahan.length; i++) {
-				db.addBahan(idBahan, namaBahan, jumlah);
-					
-//			}
+			for (i= 0; i<arrayBahan.length; i++) {
+				if (db.isBahanThere(arrayBahan[i].getId())) {
+					db.updateStockBahan(arrayBahan[i].getId(), arrayBahan[i].getJumlah());;
+				} else {
+					db.addBahan(arrayBahan[i].getId(), arrayBahan[i].getNama(), arrayBahan[i].getJumlah());
+				}	
+			}
 			
 			valid = true;
 		}catch (Exception e) {

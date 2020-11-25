@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 24, 2020 at 03:56 AM
+-- Generation Time: Nov 25, 2020 at 03:19 PM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.4.11
 
@@ -69,7 +69,7 @@ CREATE TABLE `bahan` (
   `id_bahan` int(11) NOT NULL,
   `nama_bahan` varchar(50) NOT NULL,
   `jumlah` int(11) DEFAULT NULL,
-  `tanggal_kadaluwarsa` date DEFAULT NULL
+  `tanggal_kadaluwarsa` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -77,8 +77,11 @@ CREATE TABLE `bahan` (
 --
 
 INSERT INTO `bahan` (`id_bahan`, `nama_bahan`, `jumlah`, `tanggal_kadaluwarsa`) VALUES
+(1, 'susu', 23, '2020-12-12'),
 (1, 'susu', 30, '2022-10-01'),
+(2, 'kakao', 202, '2020-12-12'),
 (2, 'kakao', 50, '2022-10-01'),
+(3, 'gula pasir', 50, '2020-12-12'),
 (3, 'gula pasir', 50, '2022-10-01'),
 (4, 'vanilla', 50, '2022-10-01'),
 (5, 'madu', 50, '2022-10-01'),
@@ -86,8 +89,9 @@ INSERT INTO `bahan` (`id_bahan`, `nama_bahan`, `jumlah`, `tanggal_kadaluwarsa`) 
 (7, 'minyak kelapa', 50, '2022-10-01'),
 (8, 'bubuk cocoa', 50, '2022-10-01'),
 (9, 'wallnut', 50, '2022-10-01'),
-(10, 'kelapa', 50, '2022-10-01'),
+(11, 'almond', 100, '2020-12-12'),
 (11, 'almond', 50, '2022-10-01'),
+(12, 'sprinkle', 200, '2020-12-12'),
 (12, 'sprinkle', 50, '2022-10-01'),
 (13, 'coffee', 50, '2022-10-01'),
 (14, 'jeruk', 50, '2022-10-01'),
@@ -99,7 +103,9 @@ INSERT INTO `bahan` (`id_bahan`, `nama_bahan`, `jumlah`, `tanggal_kadaluwarsa`) 
 (21, 'baking soda', 50, '2022-10-01'),
 (22, 'gula aren', 50, '2022-10-01'),
 (23, 'telur', 50, '2022-10-01'),
-(28, 'makanan', 10, '2020-02-02');
+(24, 'milk choco', 110, '2020-12-12'),
+(25, 'dark choco', 19, '2020-12-12'),
+(27, '', 10, '2020-12-12');
 
 -- --------------------------------------------------------
 
@@ -137,7 +143,6 @@ INSERT INTO `gudang` (`id_coklat`, `nama_coklat`, `jumlah`) VALUES
 
 CREATE TABLE `resep` (
   `id_coklat` int(11) DEFAULT NULL,
-  `nama_coklat` varchar(30) DEFAULT NULL,
   `nama_bahan` varchar(50) DEFAULT NULL,
   `jumlah` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -146,68 +151,68 @@ CREATE TABLE `resep` (
 -- Dumping data for table `resep`
 --
 
-INSERT INTO `resep` (`id_coklat`, `nama_coklat`, `nama_bahan`, `jumlah`) VALUES
-(1, 'Dark chocolate', 'kakao', 100),
-(1, 'Dark chocolate', 'gula pasir', 100),
-(1, 'Dark chocolate', 'garam', 100),
-(2, 'JJ8', 'white choco', 100),
-(2, 'JJ8', 'dark choco', 100),
-(2, 'JJ8', 'milk choco', 100),
-(2, 'JJ8', 'gula pasir', 100),
-(2, 'JJ8', 'gula aren', 100),
-(2, 'JJ8', 'susu', 100),
-(3, 'choco', 'white choco', 100),
-(3, 'choco', 'dark choco', 100),
-(3, 'choco', 'milk choco', 100),
-(3, 'choco', 'susu', 100),
-(3, 'choco', 'gula pasir', 100),
-(3, 'choco', 'gula aren', 100),
-(3, 'choco', 'bubuk cocoa', 100),
-(2, 'JJ8', 'bubuk cocoa', 100),
-(4, 'Susanti Gojali', 'susu', 100),
-(4, 'Susanti Gojali', 'kakao', 100),
-(4, 'Susanti Gojali', 'gula pasir', 100),
-(4, 'Susanti Gojali', 'cocoa butter', 100),
-(4, 'Susanti Gojali', 'garam', 100),
-(4, 'Susanti Gojali', 'vanilla', 100),
-(5, 'coco', 'telur', 100),
-(5, 'coco', 'gula pasir', 100),
-(5, 'coco', 'tepung terigu', 100),
-(5, 'coco', 'baking soda', 100),
-(5, 'coco', 'bubuk cocoa', 100),
-(5, 'coco', 'mentega', 100),
-(6, 'fefe', 'gula pasir', 100),
-(6, 'fefe', 'tepung terigu', 100),
-(6, 'fefe', 'baking soda', 100),
-(6, 'fefe', 'bubuk cocoa', 100),
-(6, 'fefe', 'almond', 100),
-(6, 'fefe', 'wallnut', 100),
-(6, 'fefe', 'mentega', 100),
-(6, 'fefe', 'white choco', 100),
-(6, 'fefe', 'milk choco', 100),
-(7, 'dwdw', 'milk choco', 100),
-(7, 'dwdw', 'sprinkle', 100),
-(7, 'dwdw', 'gula pasir', 100),
-(7, 'dwdw', 'tepung terigu', 100),
-(7, 'dwdw', 'dark choco', 100),
-(8, 'okok', 'milk choco', 100),
-(8, 'okok', 'tepung terigu', 100),
-(8, 'okok', 'mesis coklat', 100),
-(8, 'okok', 'sprinkle', 100),
-(8, 'okok', 'wallnut', 100),
-(8, 'okok', 'gula pasir', 100),
-(8, 'okok', 'bubuk cocoa', 100),
-(9, 'jj\'0', 'white choco', 100),
-(9, 'jj\'0', 'dark choco', 100),
-(9, 'jj\'0', 'milk choco', 100),
-(9, 'jj\'0', 'susu', 100),
-(9, 'jj\'0', 'gula pasir', 100),
-(9, 'jj\'0', 'gula aren', 100),
-(9, 'jj\'0', 'pewarna makanan', 100),
-(9, 'jj\'0', 'bubuk cocoa', 100),
-(10, 'chacha', 'milk choco', 100),
-(10, 'chacha', 'pewarna makanan', 100),
-(10, 'chacha', 'gula pasir', 100);
+INSERT INTO `resep` (`id_coklat`, `nama_bahan`, `jumlah`) VALUES
+(1, 'kakao', 100),
+(1, 'gula pasir', 100),
+(1, 'garam', 100),
+(2, 'white choco', 100),
+(2, 'dark choco', 100),
+(2, 'milk choco', 100),
+(2, 'gula pasir', 100),
+(2, 'gula aren', 100),
+(2, 'susu', 100),
+(3, 'white choco', 100),
+(3, 'dark choco', 100),
+(3, 'milk choco', 100),
+(3, 'susu', 100),
+(3, 'gula pasir', 100),
+(3, 'gula aren', 100),
+(3, 'bubuk cocoa', 100),
+(2, 'bubuk cocoa', 100),
+(4, 'susu', 100),
+(4, 'kakao', 100),
+(4, 'gula pasir', 100),
+(4, 'cocoa butter', 100),
+(4, 'garam', 100),
+(4, 'vanilla', 100),
+(5, 'telur', 100),
+(5, 'gula pasir', 100),
+(5, 'tepung terigu', 100),
+(5, 'baking soda', 100),
+(5, 'bubuk cocoa', 100),
+(5, 'mentega', 100),
+(6, 'gula pasir', 100),
+(6, 'tepung terigu', 100),
+(6, 'baking soda', 100),
+(6, 'bubuk cocoa', 100),
+(6, 'almond', 100),
+(6, 'wallnut', 100),
+(6, 'mentega', 100),
+(6, 'white choco', 100),
+(6, 'milk choco', 100),
+(7, 'milk choco', 100),
+(7, 'sprinkle', 100),
+(7, 'gula pasir', 100),
+(7, 'tepung terigu', 100),
+(7, 'dark choco', 100),
+(8, 'milk choco', 100),
+(8, 'tepung terigu', 100),
+(8, 'mesis coklat', 100),
+(8, 'sprinkle', 100),
+(8, 'wallnut', 100),
+(8, 'gula pasir', 100),
+(8, 'bubuk cocoa', 100),
+(9, 'white choco', 100),
+(9, 'dark choco', 100),
+(9, 'milk choco', 100),
+(9, 'susu', 100),
+(9, 'gula pasir', 100),
+(9, 'gula aren', 100),
+(9, 'pewarna makanan', 100),
+(9, 'bubuk cocoa', 100),
+(10, 'milk choco', 100),
+(10, 'pewarna makanan', 100),
+(10, 'gula pasir', 100);
 
 -- --------------------------------------------------------
 
@@ -224,7 +229,7 @@ CREATE TABLE `saldo` (
 --
 
 INSERT INTO `saldo` (`uang`) VALUES
-(500004912);
+(457999912);
 
 -- --------------------------------------------------------
 
@@ -259,8 +264,7 @@ ALTER TABLE `add_stock`
 -- Indexes for table `bahan`
 --
 ALTER TABLE `bahan`
-  ADD PRIMARY KEY (`id_bahan`),
-  ADD UNIQUE KEY `unique_nama_bahan` (`nama_bahan`);
+  ADD PRIMARY KEY (`id_bahan`,`nama_bahan`,`tanggal_kadaluwarsa`) USING BTREE;
 
 --
 -- Indexes for table `resep`
