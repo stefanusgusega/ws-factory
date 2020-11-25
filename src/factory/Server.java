@@ -15,20 +15,27 @@ public class Server {
 	
 	// ini cuma contoh
 	@WebMethod
-	public String bonjour(String id) throws SQLException{
-		String res = "";
-		try {
-			res = db.getName(id);
-			return res;
-		}
-		catch (Exception e) {
-			return "Errornya di bonjour: "+e.toString();
-		}
+	public String bonjour() throws SQLException{
+//		int[] x = {2,3,4,5};
+		Bahan bahan = new Bahan(21,"Testing",29,"11/24/2020");
+		String html = "<h3>"+bahan.getIDBahan()+"</h3>"
+					+"<h3>"+bahan.getNama()+"</h3>"
+					+"<h3>"+bahan.getJumlah()+"</h3>"
+					+"<h3>"+bahan.getTanggalExp()+"</h3>";
+//		return bahan;
+		return html;
 	}
 	
 	@WebMethod
-	public void addNewChocolate() {
-		
+	public boolean addNewChocolate(Resep r) throws SQLException{
+		boolean added = false;
+		try {
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return added;
 	}
 	
 	@WebMethod
@@ -109,10 +116,10 @@ public class Server {
 		try {
 			int i;
 			for (i= 0; i<arrayBahan.length; i++) {
-				if (db.isBahanThere(arrayBahan[i].getId())) {
+				if (db.isBahanThere(arrayBahan[i].getIDBahan())) {
 					db.updateStockBahan(arrayBahan[i].getId(), arrayBahan[i].getJumlah());;
 				} else {
-					db.addBahan(arrayBahan[i].getId(), arrayBahan[i].getNama(), arrayBahan[i].getJumlah());
+					db.addBahan(arrayBahan[i].getIDBahan(), arrayBahan[i].getNama(), arrayBahan[i].getJumlah());
 				}	
 			}
 			
