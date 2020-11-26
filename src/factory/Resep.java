@@ -9,10 +9,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Resep {
 	private int chocoID;
-	private int[] bahanList;
+	private Bahan[] bahanList;
 		
 	public Resep() {};
-	public Resep(int chocoID, int[] bahanList) {
+	public Resep(int chocoID, Bahan[] bahanList) {
 		this.chocoID = chocoID;
 		this.bahanList = bahanList;
 	}
@@ -21,7 +21,7 @@ public class Resep {
 		return this.chocoID;
 	}
 	
-	public int[] getBahan() {
+	public Bahan[] getBahan() {
 		return this.bahanList;
 	}
 }

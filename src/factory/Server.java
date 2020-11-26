@@ -27,22 +27,20 @@ public class Server {
 	}
 	
 	@WebMethod
-	public int addNewChocolate(@WebParam(name= "resep") Resep r)  {
-//		boolean added = false;
-		int j = 7;
-		int x = r.getBahan()[0];
-		int y = x+1+j;
-//		try {
-//			int[] listBahan = r.getBahan();
-//			for(int i = 0;i < listBahan.length ; i++) {
-//				db.addNewResep(r.getChocoID(), listBahan[i].getNama(), listBahan[i].getJumlah());
-//			}
-//			added=true;
-//		}
-//		catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		return y;
+	public boolean addNewChocolate( Resep r) throws SQLException {
+		boolean added = false;
+		
+		try {
+			Bahan[] listBahan = r.getBahan();
+			for(int i = 0;i < listBahan.length ; i++) {
+				db.addNewResep(r.getChocoID(), listBahan[i].getNama(), listBahan[i].getJumlah());
+			}
+			added=true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return added;
 	}
 	
 	@WebMethod
@@ -138,7 +136,7 @@ public class Server {
 	}
 	
 	@WebMethod
-	public Bahan[] getBahan() {
+	public Bahan[] getBahan() throws SQLException {
 		Bahan[] result = null;
 		try {
 			result = db.getBahan();
@@ -148,4 +146,6 @@ public class Server {
 		}
 		return result;
 	}
+	
+	
 }
