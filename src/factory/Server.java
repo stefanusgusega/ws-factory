@@ -26,17 +26,17 @@ public class Server {
 		return html;
 	}
 	
-	@WebMethod
-	public boolean addNewChocolate(Resep r) throws SQLException{
-		boolean added = false;
-		try {
-			
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		return added;
-	}
+//	@WebMethod
+//	public boolean addNewChocolate(Resep r) throws SQLException{
+//		boolean added = false;
+//		try {
+//			
+//		}
+//		catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return added;
+//	}
 	
 	@WebMethod
 	public boolean insertNewAddStockRequest(int chocId, int amountChoc) throws SQLException {
@@ -117,7 +117,7 @@ public class Server {
 			int i;
 			for (i= 0; i<arrayBahan.length; i++) {
 				if (db.isBahanThere(arrayBahan[i].getIDBahan())) {
-					db.updateStockBahan(arrayBahan[i].getId(), arrayBahan[i].getJumlah());;
+					db.updateStockBahan(arrayBahan[i].getIDBahan(), arrayBahan[i].getJumlah());;
 				} else {
 					db.addBahan(arrayBahan[i].getIDBahan(), arrayBahan[i].getNama(), arrayBahan[i].getJumlah());
 				}	

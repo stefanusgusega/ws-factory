@@ -45,7 +45,7 @@ public class Database {
 	private final String userName = "root";
 
 	/** The password for the MySQL account (or empty for anonymous) */
-	private final String password = "Stefanus02092000";
+	private final String password = "";
 
 	/** The name of the computer running MySQL */
 	private final String serverName = "localhost";
@@ -229,8 +229,8 @@ public class Database {
 		return arrayOfBahan;
 	}
 	
-	public void addResep(Resep R) throws SQLException{
-		Connection conn = getConnection();
+//	public void addResep(Resep R) throws SQLException{
+//		Connection conn = getConnection();
 //		String query = "INSERT INTO resep (id_cokelat, jumlah, status) VALUES (?,?,?)";
 //		PreparedStatement preparedStmt = conn.prepareStatement(query);
 //		preparedStmt.setInt(1, chocId);
@@ -238,7 +238,7 @@ public class Database {
 //		preparedStmt.setString(3, status);
 //		preparedStmt.execute();
 //		conn.close();
-	}
+//	}
 	
 	/**
 	 * method coba2
