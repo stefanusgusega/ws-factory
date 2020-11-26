@@ -9,18 +9,19 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Resep {
 	private int chocoID;
-	private Bahan[] bahan;
-	
-	public Resep(int chocoID, Bahan[] bahan) {
+	private int[] bahanList;
+		
+	public Resep() {};
+	public Resep(int chocoID, int[] bahanList) {
 		this.chocoID = chocoID;
-		this.bahan = bahan;
+		this.bahanList = bahanList;
 	}
 	
 	public int getChocoID() {
 		return this.chocoID;
 	}
 	
-	public Bahan[] getBahan() {
-		return this.bahan;
+	public int[] getBahan() {
+		return this.bahanList;
 	}
 }

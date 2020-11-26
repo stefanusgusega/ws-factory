@@ -26,17 +26,24 @@ public class Server {
 		return html;
 	}
 	
-//	@WebMethod
-//	public boolean addNewChocolate(Resep r) throws SQLException{
+	@WebMethod
+	public int addNewChocolate(@WebParam(name= "resep") Resep r)  {
 //		boolean added = false;
+		int j = 7;
+		int x = r.getBahan()[0];
+		int y = x+1+j;
 //		try {
-//			
+//			int[] listBahan = r.getBahan();
+//			for(int i = 0;i < listBahan.length ; i++) {
+//				db.addNewResep(r.getChocoID(), listBahan[i].getNama(), listBahan[i].getJumlah());
+//			}
+//			added=true;
 //		}
 //		catch (Exception e) {
 //			e.printStackTrace();
 //		}
-//		return added;
-//	}
+		return y;
+	}
 	
 	@WebMethod
 	public boolean insertNewAddStockRequest(int chocId, int amountChoc) throws SQLException {

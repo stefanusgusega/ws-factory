@@ -58,7 +58,7 @@ public class Database {
 	
 	/** The name of the table we are testing with */
 	private final String tableName = "JDBC_TEST";
-	private final String dbDriver = "com.mysql.jdbc.Driver";
+	private final String dbDriver = "com.mysql.cj.jdbc.Driver";
 	
 	public void loadDriver() {
 		try {
@@ -103,6 +103,17 @@ public class Database {
 		return res;
 	}
 	
+	public void addNewResep(int idCokelat,String namaBahan,int jumlah) throws SQLException{
+		Connection conn = getConnection();
+		String query = "INSERT INTO resep (id_coklat, nama_bahan, jumlah) VALUES (?,?,?)";
+		PreparedStatement preparedStmt = conn.prepareStatement(query);
+		preparedStmt.setInt(1, idCokelat);
+		preparedStmt.setString(2, namaBahan);
+		preparedStmt.setInt(3, jumlah);
+		preparedStmt.execute();
+		conn.close();
+		
+	}
 	public void insertToAddStock(int chocId, int amount, String status) throws SQLException {
 		Connection conn = getConnection();
 		String query = "INSERT INTO add_stock (id_cokelat, jumlah, status) VALUES (?,?,?)";
