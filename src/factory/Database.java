@@ -145,13 +145,16 @@ public class Database {
 		conn.close();
 	}
 
-	public void returnStatusAddStock(int idAddStock) throws SQLException {
+	public String returnStatusAddStock(int idAddStock) throws SQLException {
+		String res = "";
 		Connection conn = getConnection();
-		String command = "SELECT status FROM add_stock WHERE id_add_stock = ?";
-		PreparedStatement preparedStmt = conn.prepareStatement(command);
-		preparedStmt.setInt(1, idAddStock);
-		preparedStmt.execute();
-		conn.close();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT status FROM add_stock WHERE id_add_stock = " + idAddStock;
+		ResultSet rs = stmt.executeQuery(command);
+		if (rs.next()) {
+			res = rs.getString("status");
+		}
+		return res;
 	}
 	
 	public void addSaldo(int saldo) throws SQLException{
@@ -247,6 +250,12 @@ public class Database {
 			i++;
 		}
 		return arrayOfBahan;
+	}
+
+	p
+
+	public void makeCoklat(){
+
 	}
 	
 //	public void addResep(Resep R) throws SQLException{
