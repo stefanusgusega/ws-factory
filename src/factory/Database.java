@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * This class demonstrates how to connect to MySQL and run some basic commands.
@@ -252,11 +254,67 @@ public class Database {
 		return arrayOfBahan;
 	}
 
-	p
+	public int getRowRecipe(int id_coklat) throws SQLException{
+		int row = -1;
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String count = "SELECT count(*) as total FROM resep WHERE id_coklat = " + id_coklat;
+		ResultSet ct = stmt.executeQuery(count);
+		if (ct.next()) {
+			row = ct.getInt("total");
+		}
+		return row;
+	}
+
+	public ResepCoklat[] getRecipe(int id_coklat) throws SQLException {
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT * FROM resep WHERE id_coklat = " + id_coklat;
+		
+		int row = this.getRowRecipe(id_coklat);
+		ResultSet rs = stmt.executeQuery(command);
+		
+		ResepCoklat[ ] arrayOfResepCoklat = new ResepCoklat[row];
+		int i = 0;
+		while(rs.next()) {
+			ResepCoklat resep = new ResepCoklat(id_coklat, rs.getString("nama_bahan"), rs.getInt("jumlah"))
+			arrayOfResepCoklat[i] = resep;
+			i++;
+		}
+		return arrayOfResepCoklat;
+	}
 
 	public void makeCoklat(){
-
+		String command_substract_from_bahan = "UPDATE bahan";
 	}
+
+	public List<String> getListOfCoklat() throws SQLException{
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT DISTINCT nama_coklat FROM resep";
+		ResultSet rs = stmt.executeQuery(command);
+		List<String> list_coklat = new ArrayList<>();
+		if (rs.next()) {
+			list_coklat.add(rs.getString("nama_coklat"));
+		}
+		
+		return list_coklat;
+	}
+
+	
+
+	// public AddStock getAddStockInfo(int id_add_stock){
+	// 	String res = "";
+	// 	Connection conn = getConnection();
+	// 	Statement stmt = conn.createStatement();
+	// 	String command = "SELECT * FROM add_stock WHERE id_add_stock = " + id_add_stock;
+	// 	ResultSet rs = stmt.executeQuery(command);
+	// 	AddStock[] arrayOfAddStock = new AddStock[]
+	// 	if (rs.next()) {
+	// 		res = rs.getString("status");
+	// 	}
+	// 	return res;
+	// }
 	
 //	public void addResep(Resep R) throws SQLException{
 //		Connection conn = getConnection();
