@@ -248,10 +248,25 @@ public class Database {
 		int i = 0;
 		while(rs.next()) {
 			arrayOfBahan[i] =  new Bahan(rs.getInt("id_bahan"),rs.getString("nama_bahan"),rs.getInt("jumlah"),rs.getString("tanggal_kadaluwarsa"));
-			
 			i++;
 		}
 		return arrayOfBahan;
+	}
+
+	public Bahan getInfoBahan(String nama_bahan) throws SQLException {
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT * FROM bahan WHERE nama_bahan = \"" + nama_bahan + "\"";
+
+		ResultSet rs = stmt.executeQuery(command);
+		// Bahan bahan = new Bahan();
+		if (rs.next()){
+			Bahan bahan = new Bahan(rs.getInt("id_bahan"), rs.getString("nama_bahan"), rs.getInt("jumlah"), rs.getString("tanggal_kadaluwarsa"));
+			return bahan;
+		} else {
+			Bahan bahan = new Bahan();
+			return bahan;
+		}
 	}
 
 	public int getStockBahan(String nama_bahan) throws SQLException {
@@ -268,38 +283,102 @@ public class Database {
 		return res;
 	}
 
-	public List<ResepCoklat> getRecipe(int id_coklat) throws SQLException {
+	// public List<ResepCoklat> getRecipe(int id_coklat) throws SQLException {
+	// 	Connection conn = getConnection();
+	// 	Statement stmt = conn.createStatement();
+	// 	String command = "SELECT * FROM resep WHERE id_coklat = " + id_coklat;
+		
+	// 	ResultSet rs = stmt.executeQuery(command);
+		
+	// 	List<ResepCoklat> list_resep = new ArrayList<ResepCoklat>();
+	// 	while(rs.next()) {
+	// 		ResepCoklat resep = new ResepCoklat(id_coklat, rs.getString("nama_bahan"), rs.getInt("jumlah"));
+	// 		list_resep.add(resep);
+	// 	}
+	// 	return list_resep;
+	// }
+
+	public void substractBahan(Bahan bahan, int substracted_bahan) throws SQLException {		
+		Connection conn = getConnection();
+		String command = "UPDATE bahan SET jumlah = jumlah - " + substracted_bahan + " WHERE nama_bahan = ?";
+		PreparedStatement preparedStmt = conn.prepareStatement(command);
+		preparedStmt.setString(1, bahan.getNama());
+		preparedStmt.execute();
+		conn.close();
+	}
+
+	// public void makeCoklat(int id_coklat, int jumlah) throws SQLException {
+	// 	boolean succ = true;
+	// 	List<ResepCoklat> list_resep = new ArrayList<ResepCoklat>();
+	// 	list_resep = this.getRecipe(id_coklat);
+	// 	for (int i = 0; i < list_resep.size(); i++){
+	// 		int substracted_coklat = list_resep.get(i).getJmlBahan() * jumlah;
+	// 		if (substracted_coklat > this.getStockBahan(list_resep.get(i).getNamaBahan())){
+	// 			succ = false;
+	// 			break;
+	// 		}
+	// 	}
+		
+	// 	//jika semua bahan cukup, baru dilakukan pengurangan bahan dan penambahan coklat ke gudang
+	// 	if (succ) {
+	// 		for (int i = 0; i < list_resep.size(); i++){
+	// 			try {
+	// 				this.substractBahan(list_resep.get(i), jumlah);
+	// 			} catch (SQLException e) {
+	// 				e.printStackTrace();
+	// 			}
+	// 		}
+	// 		Connection conn = getConnection();
+	// 		String command = "UPDATE gudang SET jumlah = jumlah + " + jumlah + " WHERE id_coklat = ?";
+	// 		PreparedStatement preparedStmt = conn.prepareStatement(command);
+	// 		preparedStmt.setInt(1, id_coklat);
+	// 		preparedStmt.execute();
+	// 		conn.close();
+	// 	}
+	// }
+
+	public int countGetResep(int id_coklat) throws SQLException {
+		int count = 0;
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT count(*) AS jml_resep FROM resep WHERE id_coklat = " + id_coklat;
+		
+		ResultSet rs = stmt.executeQuery(command);
+
+		if (rs.next()){
+			count = rs.getInt("jml_resep");
+		}
+
+		return count;
+
+	}
+
+	public Resep getResep(int id_coklat) throws SQLException {
 		Connection conn = getConnection();
 		Statement stmt = conn.createStatement();
 		String command = "SELECT * FROM resep WHERE id_coklat = " + id_coklat;
 		
 		ResultSet rs = stmt.executeQuery(command);
 		
-		List<ResepCoklat> list_resep = new ArrayList<ResepCoklat>();
+		Bahan[] arrayOfBahan = new Bahan[this.countGetResep(id_coklat)];
+		int i = 0;
 		while(rs.next()) {
-			ResepCoklat resep = new ResepCoklat(id_coklat, rs.getString("nama_bahan"), rs.getInt("jumlah"));
-			list_resep.add(resep);
+			Bahan bahan = this.getInfoBahan(rs.getString("nama_bahan"));
+			arrayOfBahan[i] = new Bahan(bahan.getIDBahan(), rs.getString("nama_bahan"), rs.getInt("jumlah"), bahan.getTanggalExp());
+			i++;
 		}
-		return list_resep;
-	}
-
-	public void substractBahan(ResepCoklat resep, int jml_coklat) throws SQLException {		
-		Connection conn = getConnection();
-		int substracted_coklat = resep.getJmlBahan() * jml_coklat;
-		String command = "UPDATE bahan SET jumlah = jumlah - " + substracted_coklat + " WHERE nama_bahan = ?";
-		PreparedStatement preparedStmt = conn.prepareStatement(command);
-		preparedStmt.setString(1, resep.getNamaBahan());
-		preparedStmt.execute();
-		conn.close();
+		Resep resep = new Resep(id_coklat, arrayOfBahan);
+		return resep;
 	}
 
 	public void makeCoklat(int id_coklat, int jumlah) throws SQLException {
 		boolean succ = true;
-		List<ResepCoklat> list_resep = new ArrayList<ResepCoklat>();
-		list_resep = this.getRecipe(id_coklat);
-		for (int i = 0; i < list_resep.size(); i++){
-			int substracted_coklat = list_resep.get(i).getJmlBahan() * jumlah;
-			if (substracted_coklat > this.getStockBahan(list_resep.get(i).getNamaBahan())){
+		Resep resep = this.getResep(id_coklat);
+		
+		for (int i = 0; i < resep.getBahan().length; i++){
+			int substracted_coklat = resep.getBahan()[i].getJumlah() * jumlah;
+			int stock_bahan = this.getStockBahan(resep.getBahan()[i].getNama());
+			if (substracted_coklat > stock_bahan){
 				succ = false;
 				break;
 			}
@@ -307,9 +386,9 @@ public class Database {
 		
 		//jika semua bahan cukup, baru dilakukan pengurangan bahan dan penambahan coklat ke gudang
 		if (succ) {
-			for (int i = 0; i < list_resep.size(); i++){
+			for (int i = 0; i < resep.getBahan().length; i++){
 				try {
-					this.substractBahan(list_resep.get(i), jumlah);
+					this.substractBahan(resep.getBahan()[i], jumlah*resep.getBahan()[i].getJumlah());
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -323,14 +402,28 @@ public class Database {
 		}
 	}
 
-	public List<String> getListOfCoklat() throws SQLException{
+	public int countListCoklat() throws SQLException {
+		int count = 0;
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT DISTINCT count(nama_coklat) AS jml_coklat FROM resep";
+		ResultSet rs = stmt.executeQuery(command);
+		if (rs.next()) {
+			count = rs.getInt("jml_coklat");
+		}
+		return count;
+	}
+
+	public String[] getListOfCoklat() throws SQLException{
 		Connection conn = getConnection();
 		Statement stmt = conn.createStatement();
 		String command = "SELECT DISTINCT nama_coklat FROM resep";
 		ResultSet rs = stmt.executeQuery(command);
-		List<String> list_coklat = new ArrayList<String>();
-		if (rs.next()) {
-			list_coklat.add(rs.getString("nama_coklat"));
+		String[] list_coklat = new String[this.countListCoklat()];
+		int i = 0;
+		while (rs.next()) {
+			list_coklat[i] = (rs.getString("nama_coklat"));
+			i++;
 		}
 		
 		return list_coklat;
