@@ -146,6 +146,28 @@ public class Server {
 		}
 		return result;
 	}
+	@WebMethod
+	public AddStock[] getAddStock() throws SQLException{
+		AddStock[] result = null;
+		try {
+			result = db.getAddStock();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	@WebMethod
+	public boolean canChangeStatus(int idAddStock) throws SQLException{
+		boolean valid = false;
+		try {
+			valid = db.canChangeStatus(idAddStock);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return valid;
+	}
 	
 	
 }
