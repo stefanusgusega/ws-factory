@@ -133,6 +133,15 @@ public class Database {
 		preparedStmt.execute();
 		conn.close();
 	}
+
+	public void returnStatusAddStock(int idAddStock) throws SQLException {
+		Connection conn = getConnection();
+		String command = "SELECT status FROM add_stock WHERE id_add_stock = ?";
+		PreparedStatement preparedStmt = conn.prepareStatement(command);
+		preparedStmt.setInt(1, idAddStock);
+		preparedStmt.execute();
+		conn.close();
+	}
 	
 	public void addSaldo(int saldo) throws SQLException{
 		Connection conn = getConnection();
