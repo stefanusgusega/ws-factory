@@ -88,7 +88,19 @@ public class Database {
 
 		return conn;
 	}
-	
+	public Connection getOldConnection() throws SQLException{
+		this.loadDriver();
+		Connection conn = null;
+		Properties connectionProps = new Properties();
+		connectionProps.put("user", this.userName);
+		connectionProps.put("password", this.password);
+
+		conn = DriverManager.getConnection("jdbc:mysql://"
+				+ this.serverName + ":" + this.portNumber + "/wbd",
+				connectionProps);
+
+		return conn;
+	}
 	// method coba-coba
 	public String getName(String id) throws SQLException{
 		String res = "";
@@ -143,6 +155,18 @@ public class Database {
 		preparedStmt.setInt(1, idAddStock);
 		preparedStmt.execute();
 		conn.close();
+	}
+
+	public String returnStatusAddStock(int idAddStock) throws SQLException {
+		String res = "";
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT status FROM add_stock WHERE id_add_stock = " + idAddStock;
+		ResultSet rs = stmt.executeQuery(command);
+		if (rs.next()) {
+			res = rs.getString("status");
+		}
+		return res;
 	}
 	
 	public void addSaldo(int saldo) throws SQLException{
@@ -239,6 +263,7 @@ public class Database {
 		}
 		return arrayOfBahan;
 	}
+
 	public int getRowAddStock() throws SQLException{
 		int row = -1;
 		Connection conn = getConnection();
@@ -337,7 +362,144 @@ public class Database {
 		Resep r = new Resep(idcokelat,listBahan);
 		return r;
 	}
+	public void removeBahanList(int id) throws SQLException {
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT id_cokelat,jumlah FROM add_stock WHERE id_add_stock ="+id;
+		ResultSet rs = stmt.executeQuery(command);
+		int idcokelat = -1;
+		int jumlah = -1;
+		if(rs.next()) {
+			idcokelat = rs.getInt("id_cokelat");
+			jumlah = rs.getInt("jumlah");
+		}
+		Resep r = this.getResep(idcokelat);
+		Bahan[] bahanlist = r.getBahan();
+		for(int i=0;i<bahanlist.length;i++) {
+			this.removeBahan(bahanlist[i].getNama(), bahanlist[i].getJumlah() * jumlah);
+		}
+		
+	}
+	public void removeBahan(String namabahan, int jumlah) throws SQLException {
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		int[] newjumlah = this.getJumlahBahan(namabahan, jumlah);
+		String[] tgl = this.getTanggal(namabahan);
+		for(int i =0;i< newjumlah.length; i++){
+			if (newjumlah[i] == 0) {
+				String cmd = "DELETE FROM bahan where nama_bahan = ? and tanggal_kadaluwarsa = ?";
+				PreparedStatement prepared = conn.prepareStatement(cmd);
+				prepared.setString(1, namabahan);
+				prepared.setString(2,tgl[i]);
+				prepared.execute();
+			}else {
+				String command = "UPDATE bahan SET jumlah = ? WHERE nama_bahan = ? and tanggal_kadaluwarsa = ?";
+				PreparedStatement preparedStmt = conn.prepareStatement(command);
+				preparedStmt.setInt(1, newjumlah[i]);
+				preparedStmt.setString(2,namabahan);
+				preparedStmt.setString(3,tgl[i]);
+				preparedStmt.execute();
+			}
+		}
+		conn.close();
+		
+	}
+	public String[] getTanggal(String namabahan) throws SQLException{
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		Statement stmt1 = conn.createStatement();
+		String count = "SELECT count(*) as total FROM bahan WHERE nama_bahan ='"+namabahan+"' and tanggal_kadaluwarsa >= CURRENT_DATE";
+		String command = "SELECT tanggal_kadaluwarsa FROM bahan WHERE nama_bahan ='"+namabahan+"' and tanggal_kadaluwarsa >= CURRENT_DATE";
+		ResultSet rs = stmt.executeQuery(command);
+		ResultSet ct = stmt1.executeQuery(count);
+		ct.next();
+		String[] tgl = new String[ct.getInt("total")];
+		int i =0;
+		while(rs.next()) {
+			tgl[i] = rs.getString("tanggal_kadaluwarsa");
+			i++;
+		}
+		return tgl;
+	}
+	public int[] getJumlahBahan(String namabahan,int total) throws SQLException{
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		Statement stmt1 = conn.createStatement();
+		String count = "SELECT count(*) as total FROM bahan WHERE nama_bahan ='"+namabahan+"' and tanggal_kadaluwarsa >= CURRENT_DATE";
+		String command = "SELECT jumlah FROM bahan WHERE nama_bahan ='"+namabahan+"' and tanggal_kadaluwarsa >= CURRENT_DATE";
+		ResultSet rs = stmt.executeQuery(command);
+		ResultSet ct = stmt1.executeQuery(count);
+		ct.next();
+		int[] newJumlah = new int[ct.getInt("total")];
+		int jml = total;
+		int i = 0;
+		while(rs.next()) {
+			int jumlah = rs.getInt("jumlah");
+			if (jml == 0) {
+				newJumlah[i] = jumlah;
+			} else {
+				if (jumlah >= jml) {
+					newJumlah[i] = jumlah-jml;
+					jml = 0;
+				} else {
+					newJumlah[i] = 0;
+					jml -= jumlah;
+				}
+			}
+			i+=1;
+		}
+		return newJumlah;
+		
+		
+	}
+	public void addCokelat(int addstockid) throws SQLException{
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT id_cokelat,jumlah FROM add_stock WHERE id_add_stock ="+addstockid;
+		ResultSet rs = stmt.executeQuery(command);
+		int idcokelat = -1;
+		int jumlah = -1;
+		if(rs.next()) {
+			idcokelat = rs.getInt("id_cokelat");
+			jumlah = rs.getInt("jumlah");
+		}
+		Connection conn1 = getOldConnection();
+		Statement stmt1 = conn1.createStatement();
+		String cmd = "SELECT name FROM product WHERE id="+idcokelat;
+		ResultSet rst = stmt1.executeQuery(cmd);
+		rst.next();
+		String nama = rst.getString("name");
+		Connection conn2 = getConnection();
+		if(doesCoklatExist(idcokelat)) {
+			String update = "UPDATE gudang SET jumlah = jumlah+? WHERE id_coklat = ?";
+			PreparedStatement preparedStmt = conn2.prepareStatement(update);
+			preparedStmt.setInt(1, jumlah);
+			preparedStmt.setInt(2,idcokelat);
+			preparedStmt.execute();
+		} else {
+			String update= "INSERT INTO gudang (id_coklat, nama_coklat, jumlah) VALUES (?,?,?)";
+			PreparedStatement preparedStmt = conn2.prepareStatement(update);
+			preparedStmt.setInt(1, idcokelat);
+			preparedStmt.setString(2, nama);
+			preparedStmt.setInt(3, jumlah);
+			preparedStmt.setString(4, "2020-12-12");
+			preparedStmt.execute();
+			
+		}
+		conn2.close();
+	}
 	
+	public boolean doesCoklatExist(int idcokelat) throws SQLException{
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT * FROM gudang WHERE id_coklat ="+idcokelat;
+		ResultSet rs = stmt.executeQuery(command);
+		if(rs.next()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	/**
 	 * method coba2
 	 * Run a SQL command which does not return a recordset:
