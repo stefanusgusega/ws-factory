@@ -254,38 +254,56 @@ public class Database {
 		return arrayOfBahan;
 	}
 
-	public int getRowRecipe(int id_coklat) throws SQLException{
-		int row = -1;
+	public int getStockBahan(String nama_bahan) throws SQLException {
+		int res = 0;
 		Connection conn = getConnection();
 		Statement stmt = conn.createStatement();
-		String count = "SELECT count(*) as total FROM resep WHERE id_coklat = " + id_coklat;
-		ResultSet ct = stmt.executeQuery(count);
-		if (ct.next()) {
-			row = ct.getInt("total");
+		String command = "SELECT jumlah FROM bahan WHERE nama_bahan = \"" + nama_bahan + "\"";
+
+		ResultSet rs = stmt.executeQuery(command);
+
+		if (rs.next()) {
+			res = rs.getInt("jumlah");
 		}
-		return row;
+		return res;
 	}
 
-	public ResepCoklat[] getRecipe(int id_coklat) throws SQLException {
+	public List<ResepCoklat> getRecipe(int id_coklat) throws SQLException {
 		Connection conn = getConnection();
 		Statement stmt = conn.createStatement();
 		String command = "SELECT * FROM resep WHERE id_coklat = " + id_coklat;
 		
-		int row = this.getRowRecipe(id_coklat);
 		ResultSet rs = stmt.executeQuery(command);
 		
-		ResepCoklat[ ] arrayOfResepCoklat = new ResepCoklat[row];
-		int i = 0;
+		List<ResepCoklat> list_resep = new ArrayList<>();
 		while(rs.next()) {
 			ResepCoklat resep = new ResepCoklat(id_coklat, rs.getString("nama_bahan"), rs.getInt("jumlah"))
-			arrayOfResepCoklat[i] = resep;
-			i++;
+			list_resep.add(resep);
 		}
-		return arrayOfResepCoklat;
+		return list_resep;
 	}
 
-	public void makeCoklat(){
-		String command_substract_from_bahan = "UPDATE bahan";
+	public void substractBahan(ResepCoklat resep) throws SQLException {
+		if (resep.getJmlBahan() < this.getStockBahan(resep.getNamaBahan())){
+			Connection conn = getConnection();
+			String command = "UPDATE bahan SET jumlah = jumlah - " + resep.getJmlBahan() + "WHERE nama_bahan = ?";
+			PreparedStatement preparedStmt = conn.prepareStatement(command);
+			preparedStmt.setString(1, resep.getNamaBahan());
+			preparedStmt.execute();
+			conn.close();
+		}
+	}
+
+	public void makeCoklat(int id_coklat) throws SQLException {
+		List<ResepCoklat> list_resep = this.getRecipe(id_coklat);
+		list_resep.forEach(resep -> {
+			try {
+				this.substractBahan(resep);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
 	}
 
 	public List<String> getListOfCoklat() throws SQLException{
