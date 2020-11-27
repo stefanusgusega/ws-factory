@@ -2,6 +2,7 @@ package factory;
 
 import javax.jws.WebService;
 import javax.jws.WebMethod;
+import javax.jws.WebParam;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 import java.sql.SQLException;
@@ -14,20 +15,32 @@ public class Server {
 	
 	// ini cuma contoh
 	@WebMethod
-	public String bonjour(String id) throws SQLException{
-		String res = "";
-		try {
-			res = db.getName(id);
-			return res;
-		}
-		catch (Exception e) {
-			return "Errornya di bonjour: "+e.toString();
-		}
+	public String bonjour() throws SQLException{
+//		int[] x = {2,3,4,5};
+		Bahan bahan = new Bahan(21,"Testing",29,"11/24/2020");
+		String html = "<h3>"+bahan.getIDBahan()+"</h3>"
+					+"<h3>"+bahan.getNama()+"</h3>"
+					+"<h3>"+bahan.getJumlah()+"</h3>"
+					+"<h3>"+bahan.getTanggalExp()+"</h3>";
+//		return bahan;
+		return html;
 	}
 	
 	@WebMethod
-	public void addNewChocolate() {
+	public boolean addNewChocolate( Resep r) throws SQLException {
+		boolean added = false;
 		
+		try {
+			Bahan[] listBahan = r.getBahan();
+			for(int i = 0;i < listBahan.length ; i++) {
+				db.addNewResep(r.getChocoID(), listBahan[i].getNama(), listBahan[i].getJumlah());
+			}
+			added=true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return added;
 	}
 	
 	@WebMethod
@@ -79,7 +92,18 @@ public class Server {
 		}
 		return valid;
 	}
-	
+	@WebMethod
+	public boolean setSaldo(int saldo) throws SQLException{
+		boolean valid =false;
+		try {
+			db.setSaldo(saldo);
+			valid = true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return valid;
+	}
 	@WebMethod
 	public int getSaldo() throws SQLException{
 		int saldo = -1;
@@ -92,14 +116,17 @@ public class Server {
 		return saldo;
 	}
 	@WebMethod
-	public boolean addBahan(int idBahan, String namaBahan,int jumlah) throws SQLException {
+	public boolean addBahan(@WebParam(name= "bahan") Bahan[] arrayBahan) throws SQLException {
 		boolean valid = false;
 		try {
 			int i;
-//			for (i= 0; i< idBahan.length; i++) {
-				db.addBahan(idBahan, namaBahan, jumlah);
-					
-//			}
+			for (i= 0; i<arrayBahan.length; i++) {
+				if (db.isBahanThere(arrayBahan[i].getIDBahan())) {
+					db.updateStockBahan(arrayBahan[i].getIDBahan(), arrayBahan[i].getJumlah());;
+				} else {
+					db.addBahan(arrayBahan[i].getIDBahan(), arrayBahan[i].getNama(), arrayBahan[i].getJumlah());
+				}	
+			}
 			
 			valid = true;
 		}catch (Exception e) {
@@ -109,7 +136,7 @@ public class Server {
 	}
 	
 	@WebMethod
-	public Bahan[] getBahan() {
+	public Bahan[] getBahan() throws SQLException {
 		Bahan[] result = null;
 		try {
 			result = db.getBahan();
@@ -119,4 +146,6 @@ public class Server {
 		}
 		return result;
 	}
+	
+	
 }

@@ -58,7 +58,7 @@ public class Database {
 	
 	/** The name of the table we are testing with */
 	private final String tableName = "JDBC_TEST";
-	private final String dbDriver = "com.mysql.jdbc.Driver";
+	private final String dbDriver = "com.mysql.cj.jdbc.Driver";
 	
 	public void loadDriver() {
 		try {
@@ -103,6 +103,17 @@ public class Database {
 		return res;
 	}
 	
+	public void addNewResep(int idCokelat,String namaBahan,int jumlah) throws SQLException{
+		Connection conn = getConnection();
+		String query = "INSERT INTO resep (id_coklat, nama_bahan, jumlah) VALUES (?,?,?)";
+		PreparedStatement preparedStmt = conn.prepareStatement(query);
+		preparedStmt.setInt(1, idCokelat);
+		preparedStmt.setString(2, namaBahan);
+		preparedStmt.setInt(3, jumlah);
+		preparedStmt.execute();
+		conn.close();
+		
+	}
 	public void insertToAddStock(int chocId, int amount, String status) throws SQLException {
 		Connection conn = getConnection();
 		String query = "INSERT INTO add_stock (id_cokelat, jumlah, status) VALUES (?,?,?)";
@@ -151,7 +162,15 @@ public class Database {
 		preparedStmt.execute();
 		conn.close();
 	}
-	
+	public void setSaldo( int saldo) throws SQLException {
+		Connection conn = getConnection();
+		String command = "UPDATE saldo SET uang =  ?";
+		PreparedStatement preparedStmt = conn.prepareStatement(command);
+		preparedStmt.setInt(1, saldo);
+		preparedStmt.execute();
+		conn.close();
+		
+	}
 	public int getSaldo()throws SQLException{
 		int res = 0;
 		Connection conn = getConnection();
@@ -164,6 +183,28 @@ public class Database {
 		return res;
 		
 	}
+	public boolean isBahanThere(int idBahan) throws SQLException {
+		Connection conn = getConnection();
+		String command =  "SELECT * FROM bahan WHERE id_bahan =" +idBahan+" and tanggal_kadaluwarsa = '2020-12-12'";
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery(command);
+		if (rs.next()) {
+			return true;
+		} else { 
+			return false;
+		}
+	}
+	
+	public void updateStockBahan(int idBahan,int jumlah) throws SQLException {
+		Connection conn = getConnection();
+		String command = "UPDATE bahan SET jumlah = jumlah + ? WHERE id_bahan = ? and tanggal_kadaluwarsa = '2020-12-12'";
+		PreparedStatement preparedStmt = conn.prepareStatement(command);
+		preparedStmt.setInt(1, jumlah);
+		preparedStmt.setInt(2, idBahan);
+		preparedStmt.execute();
+		conn.close();
+		
+	}
 	
 	public void addBahan(int idBahan, String namaBahan,int jumlah) throws SQLException{
 		Connection conn = getConnection();
@@ -172,7 +213,7 @@ public class Database {
 		preparedStmt.setInt(1, idBahan);
 		preparedStmt.setString(2, namaBahan);
 		preparedStmt.setInt(3, jumlah);
-		preparedStmt.setString(4, "2020-02-02");
+		preparedStmt.setString(4, "2020-12-12");
 		preparedStmt.execute();
 		conn.close();
 	}
@@ -207,6 +248,17 @@ public class Database {
 		}
 		return arrayOfBahan;
 	}
+	
+//	public void addResep(Resep R) throws SQLException{
+//		Connection conn = getConnection();
+//		String query = "INSERT INTO resep (id_cokelat, jumlah, status) VALUES (?,?,?)";
+//		PreparedStatement preparedStmt = conn.prepareStatement(query);
+//		preparedStmt.setInt(1, chocId);
+//		preparedStmt.setInt(2, amount);
+//		preparedStmt.setString(3, status);
+//		preparedStmt.execute();
+//		conn.close();
+//	}
 	
 	/**
 	 * method coba2
