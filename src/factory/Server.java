@@ -192,5 +192,17 @@ public class Server {
 		return done;
 	}
 	
+	@WebMethod
+	public Gudang[] getChocos() throws SQLException{
+		Gudang[] chocos = null;
+		try {
+			chocos = db.getListOfCoklat();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return chocos;
+	}
+	
 	
 }
