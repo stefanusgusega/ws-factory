@@ -515,7 +515,6 @@ public class Database {
 	}
 	public void removeBahan(String namabahan, int jumlah) throws SQLException {
 		Connection conn = getConnection();
-		Statement stmt = conn.createStatement();
 		int[] newjumlah = this.getJumlahBahan(namabahan, jumlah);
 		String[] tgl = this.getTanggal(namabahan);
 		for(int i =0;i< newjumlah.length; i++){
@@ -645,6 +644,17 @@ public class Database {
 		}
 		return count;
 	}
+	
+	public void addCokelatToGudang(int idcokelat,String namacokelat,int jumlah) throws SQLException{
+		Connection conn = getConnection();
+		String query = "INSERT INTO gudang (id_coklat, nama_coklat, jumlah) VALUES (?,?,?)";
+		PreparedStatement preparedStmt = conn.prepareStatement(query);
+		preparedStmt.setInt(1, idcokelat);
+		preparedStmt.setString(2, namacokelat);
+		preparedStmt.setInt(3, jumlah);
+		preparedStmt.execute();
+		conn.close();
+	}
 
 	public Gudang[] getListOfCoklat() throws SQLException{
 		Connection conn = getConnection();
@@ -663,6 +673,8 @@ public class Database {
 		}
 		return chocs;
 	}
+
+	
 
 //	public void makeCoklat(int id_coklat, int jumlah) throws SQLException {
 //		boolean succ = true;

@@ -204,5 +204,17 @@ public class Server {
 		return chocos;
 	}
 	
+	@WebMethod 
+	public boolean addGudang(int idcokelat, String nama, int jumlah) throws SQLException{
+		boolean valid = false;
+		try {
+			db.addCokelatToGudang(idcokelat, nama, jumlah);
+			valid = true;
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return valid;
+	}
+	
 	
 }
