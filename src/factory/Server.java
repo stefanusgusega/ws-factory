@@ -215,6 +215,17 @@ public class Server {
 		}
 		return valid;
 	}
+	@WebMethod
+	public String getAddStockStatus(int idAddStock) throws SQLException{
+		String status = "";
+		try {
+			status = db.returnStatusAddStock(idAddStock);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return status;
+	}
 	
 	
 }
