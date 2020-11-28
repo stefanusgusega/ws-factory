@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * This class demonstrates how to connect to MySQL and run some basic commands.
@@ -45,7 +47,7 @@ public class Database {
 	private final String userName = "root";
 
 	/** The password for the MySQL account (or empty for anonymous) */
-	private final String password = "";
+	private final String password = "Stefanus02092000";
 
 	/** The name of the computer running MySQL */
 	private final String serverName = "localhost";
@@ -141,6 +143,15 @@ public class Database {
 		preparedStmt.execute();
 		conn.close();
 	}
+	
+	public void changeStatusAddStockToReceived(int idAddStock) throws SQLException {
+		Connection conn = getConnection();
+		String command = "UPDATE add_stock SET status = 'received' WHERE id_add_stock = ?";
+		PreparedStatement preparedStmt = conn.prepareStatement(command);
+		preparedStmt.setInt(1, idAddStock);
+		preparedStmt.execute();
+		conn.close();
+	}
 
 	public String returnStatusAddStock(int idAddStock) throws SQLException {
 		String res = "";
@@ -151,6 +162,7 @@ public class Database {
 		if (rs.next()) {
 			res = rs.getString("status");
 		}
+		System.out.println(res);
 		return res;
 	}
 	
@@ -418,8 +430,12 @@ public class Database {
 		Statement stmt1 = conn1.createStatement();
 		String cmd = "SELECT name FROM product WHERE id="+chocoid;
 		ResultSet rst = stmt1.executeQuery(cmd);
-		rst.next();
-		String nama = rst.getString("name");
+//		rst.next();
+//		String nama = rst.getString("name");
+		String nama = "";
+		if (rst.next()) {
+			nama = rst.getString("name");
+		}
 		return nama;
 	}
 	public boolean canChangeStatus(int id) throws SQLException{
@@ -647,7 +663,38 @@ public class Database {
 		}
 		return chocs;
 	}
+	
+	public int[] getDeliveredIDStock() throws SQLException{
+		int[] arrayOfID = new int[this.getRowAddStock()];
+		int j = 0;
+		for (int i = 1; i <= this.getRowAddStock(); i++) {
+			if (this.returnStatusAddStock(i).equals("delivered")) {
+				arrayOfID[j] = i;
+				System.out.println("test");
+				j++;
+			}
+		}
+		
+		return arrayOfID;
+		
+	}
 
+	public AddStock getFullAddStockElement(int idStock) throws SQLException {
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT * FROM add_stock where id_add_stock="+idStock;
+		ResultSet rs = stmt.executeQuery(command);
+		AddStock res = null;
+		if (rs.next()) {
+			int id_cokelat = rs.getInt("id_cokelat");
+			int jumlah = rs.getInt("jumlah");
+			String status = rs.getString("status");
+			String chocName = this.getChocoName(id_cokelat);
+			res = new AddStock(idStock,chocName,id_cokelat,jumlah,status);
+		}
+		return res;
+		
+	}
 	
 
 	
