@@ -47,7 +47,7 @@ public class Database {
 	private final String userName = "root";
 
 	/** The password for the MySQL account (or empty for anonymous) */
-	private final String password = "Stefanus02092000";
+	private final String password = "";
 
 	/** The name of the computer running MySQL */
 	private final String serverName = "localhost";
@@ -162,7 +162,6 @@ public class Database {
 		if (rs.next()) {
 			res = rs.getString("status");
 		}
-		System.out.println(res);
 		return res;
 	}
 	
@@ -663,19 +662,34 @@ public class Database {
 		}
 		return chocs;
 	}
-	
+	public int getTotalRowDelivered() throws SQLException{
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT count(*) as total FROM add_stock where status='delivered'";
+		ResultSet rs = stmt.executeQuery(command);
+		if (rs.next()) {
+			return rs.getInt("total");
+		} else {
+			return 0;
+		}
+	}
 	public int[] getDeliveredIDStock() throws SQLException{
-		int[] arrayOfID = new int[this.getRowAddStock()];
-		int j = 0;
-		for (int i = 1; i <= this.getRowAddStock(); i++) {
-			if (this.returnStatusAddStock(i).equals("delivered")) {
-				arrayOfID[j] = i;
-				System.out.println("test");
-				j++;
+		int total = this.getTotalRowDelivered();
+		if (total != 0) {
+			int[] arrayOfID = new int[total];
+			int j = 0;
+			for (int i = 1; i <= this.getRowAddStock(); i++) {
+				if (this.returnStatusAddStock(i).equals("delivered")) {
+					arrayOfID[j] = i;
+					j++;
+				}
 			}
+			return arrayOfID;
+			
+		} else {
+			return new int[0];
 		}
 		
-		return arrayOfID;
 		
 	}
 
