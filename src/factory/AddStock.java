@@ -8,13 +8,15 @@ import javax.xml.bind.annotation.XmlType;
 public class AddStock {
 	public int addStockID;
 	public int chocoID;
+	public String chocoName;
 	public int jumlah;
 	public String status;
 	
 	public AddStock() {};
 	
-	public AddStock(int addstockid, int chocoid, int jumlah, String stat) {
+	public AddStock(int addstockid,String name, int chocoid, int jumlah, String stat) {
 		this.addStockID = addstockid;
+		this.chocoName = name;
 		this.chocoID = chocoid;
 		this.jumlah = jumlah;
 		this.status = stat;
@@ -30,6 +32,9 @@ public class AddStock {
 	}
 	public String getStatus() {
 		return this.status;
+	}
+	public String getName() {
+		return this.chocoName;
 	}
 	
 	
