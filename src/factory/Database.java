@@ -325,7 +325,7 @@ public class Database {
 		
 		ResultSet rs = stmt.executeQuery(command);
 
-		if (rs.next()){
+		while (rs.next()){
 			count++;
 		}
 		return count;

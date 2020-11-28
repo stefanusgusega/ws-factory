@@ -146,7 +146,7 @@ public class Server {
 		}
 		return result;
 	}
-
+ 
 	@WebMethod
 	public Resep[] getResep() throws SQLException {
 		Resep[] result = null;
