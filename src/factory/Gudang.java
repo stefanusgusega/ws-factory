@@ -12,7 +12,7 @@ public class Gudang {
     }
 
     public int getIDCoklat(){
-        return this.id_coklat
+        return this.id_coklat;
     }
 
     public String nama_coklat(){

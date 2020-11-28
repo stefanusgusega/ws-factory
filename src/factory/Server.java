@@ -146,6 +146,51 @@ public class Server {
 		}
 		return result;
 	}
+	@WebMethod
+	public AddStock[] getAddStock() throws SQLException{
+		AddStock[] result = null;
+		try {
+			result = db.getAddStock();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	@WebMethod
+	public boolean canChangeStatus(int idAddStock) throws SQLException{
+		boolean valid = false;
+		try {
+			valid = db.canChangeStatus(idAddStock);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return valid;
+	}
+	
+	@WebMethod
+	public boolean removeBahan(int idAddStock) throws SQLException{
+		boolean valid = false;
+		try {
+			db.removeBahanList(idAddStock);
+			valid = true;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return valid;
+	}
+	@WebMethod 
+	public boolean addCoklat(int idAddStock) throws SQLException{
+		boolean done = false;
+		try {
+			db.addCokelat(idAddStock);
+			done= true;
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return done;
+	}
 	
 	
 }
