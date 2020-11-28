@@ -6,6 +6,8 @@ import javax.jws.WebParam;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.ArrayList;
 
 @WebService
 @SOAPBinding(style = Style.RPC)
@@ -237,6 +239,40 @@ public class Server {
 			e.printStackTrace();
 		}
 		return status;
+	}
+	
+	@WebMethod
+	public int[] getArrayOfIDStockDelivered() throws SQLException{
+		int[] res = null;
+		try {
+			res = db.getDeliveredIDStock();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+	
+	@WebMethod
+	public AddStock getFullAddStockElmt(int idStock) throws SQLException{
+		AddStock res = null;
+		try {
+			res = db.getFullAddStockElement(idStock);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+	
+	@WebMethod
+	public void changeStatusAddStockToDeliv(int idAddStock) throws SQLException {
+		try {
+			db.changeStatusAddStockToReceived(idAddStock);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
