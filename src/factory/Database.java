@@ -56,8 +56,6 @@ public class Database {
 	/** The name of the database we are testing with (this default is installed with MySQL) */
 	private final String dbName = "factory";
 	
-	/** The name of the table we are testing with */
-	private final String tableName = "JDBC_TEST";
 	private final String dbDriver = "com.mysql.cj.jdbc.Driver";
 	
 	public void loadDriver() {
@@ -100,19 +98,6 @@ public class Database {
 				connectionProps);
 
 		return conn;
-	}
-	// method coba-coba
-	public String getName(String id) throws SQLException{
-		String res = "";
-		Connection conn = getConnection();
-		Statement stmt = conn.createStatement();
-		String command = "SELECT nama_bahan from bahan WHERE id_bahan = "+id;
-		ResultSet rs = stmt.executeQuery(command);
-		if (rs.next()) {
-			res = rs.getString("nama_bahan");
-		}
-//		res = rs.getString("Name");
-		return res;
 	}
 	
 	public void addNewResep(int idCokelat,String namaBahan,int jumlah) throws SQLException{
@@ -558,7 +543,6 @@ public class Database {
 	}
 	public void removeBahan(String namabahan, int jumlah) throws SQLException {
 		Connection conn = getConnection();
-		Statement stmt = conn.createStatement();
 		int[] newjumlah = this.getJumlahBahan(namabahan, jumlah);
 		String[] tgl = this.getTanggal(namabahan);
 		for(int i =0;i< newjumlah.length; i++){
@@ -681,27 +665,44 @@ public class Database {
 		int count = 0;
 		Connection conn = getConnection();
 		Statement stmt = conn.createStatement();
-		String command = "SELECT DISTINCT count(nama_coklat) AS jml_coklat FROM resep";
-		ResultSet rs = stmt.executeQuery(command);
+		String cmd = "SELECT count(id_coklat) AS jumlah_coklat FROM gudang";
+		ResultSet rs = stmt.executeQuery(cmd);
 		if (rs.next()) {
-			count = rs.getInt("jml_coklat");
+			count = rs.getInt("jumlah_coklat");
 		}
 		return count;
 	}
+	
+	public void addCokelatToGudang(int idcokelat,String namacokelat,int jumlah) throws SQLException{
+		Connection conn = getConnection();
+		String query = "INSERT INTO gudang (id_coklat, nama_coklat, jumlah) VALUES (?,?,?)";
+		PreparedStatement preparedStmt = conn.prepareStatement(query);
+		preparedStmt.setInt(1, idcokelat);
+		preparedStmt.setString(2, namacokelat);
+		preparedStmt.setInt(3, jumlah);
+		preparedStmt.execute();
+		conn.close();
+	}
 
-	public String[] getListOfCoklat() throws SQLException{
+	public Gudang[] getListOfCoklat() throws SQLException{
 		Connection conn = getConnection();
 		Statement stmt = conn.createStatement();
-		String command = "SELECT DISTINCT nama_coklat FROM resep";
+		String command = "SELECT * FROM gudang";
 		ResultSet rs = stmt.executeQuery(command);
-		String[] list_coklat = new String[this.countListCoklat()];
+		Gudang[] chocs = new Gudang[this.countListCoklat()];
 		int i = 0;
 		while (rs.next()) {
-			list_coklat[i] = (rs.getString("nama_coklat"));
+			int id_coklat = rs.getInt("id_coklat");
+			String nama_coklat = rs.getString("nama_coklat");
+			int jumlah = rs.getInt("jumlah");
+			Gudang choc = new Gudang(id_coklat, nama_coklat, jumlah);
+			chocs[i] = choc;
 			i++;
 		}
-		return list_coklat;
+		return chocs;
 	}
+
+	
 
 //	public void makeCoklat(int id_coklat, int jumlah) throws SQLException {
 //		boolean succ = true;
@@ -774,73 +775,7 @@ public class Database {
 //		}
 //		return list_resep;
 //	}
-	/**
-	 * method coba2
-	 * Run a SQL command which does not return a recordset:
-	 * CREATE/INSERT/UPDATE/DELETE/DROP/etc.
-	 * 
-	 * @throws SQLException If something goes wrong
-	 */
-	public boolean executeUpdate(Connection conn, String command) throws SQLException {
-	    Statement stmt = null;
-	    try {
-	        stmt = conn.createStatement();
-	        stmt.executeUpdate(command); // This will throw a SQLException if it fails
-	        return true;
-	    } finally {
-
-	    	// This will run whether we throw an exception or not
-	        if (stmt != null) { stmt.close(); }
-	    }
-	}
 	
-	/**
-	 * method coba2
-	 * Connect to MySQL and do some stuff.
-	 */
-	public void run() {
-
-		// Connect to MySQL
-		Connection conn = null;
-		try {
-			conn = this.getConnection();
-			System.out.println("Connected to database");
-		} catch (SQLException e) {
-			System.out.println("ERROR: Could not connect to the database");
-			e.printStackTrace();
-			return;
-		}
-
-		// Create a table
-		try {
-		    String createString =
-			        "CREATE TABLE " + this.tableName + " ( " +
-			        "ID INTEGER NOT NULL, " +
-			        "NAME varchar(40) NOT NULL, " +
-			        "STREET varchar(40) NOT NULL, " +
-			        "CITY varchar(20) NOT NULL, " +
-			        "STATE char(2) NOT NULL, " +
-			        "ZIP char(5), " +
-			        "PRIMARY KEY (ID))";
-			this.executeUpdate(conn, createString);
-			System.out.println("Created a table");
-	    } catch (SQLException e) {
-			System.out.println("ERROR: Could not create the table");
-			e.printStackTrace();
-			return;
-		}
-		
-		// Drop the table
-		try {
-		    String dropString = "DROP TABLE " + this.tableName;
-			this.executeUpdate(conn, dropString);
-			System.out.println("Dropped the table");
-	    } catch (SQLException e) {
-			System.out.println("ERROR: Could not drop the table");
-			e.printStackTrace();
-			return;
-		}
-	}
 	
 	
 }
