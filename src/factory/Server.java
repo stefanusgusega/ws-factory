@@ -146,6 +146,18 @@ public class Server {
 		}
 		return result;
 	}
+
+	@WebMethod
+	public Resep[] getResep() throws SQLException {
+		Resep[] result = null;
+		try {
+			result = db.getAllResep();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 	@WebMethod
 	public AddStock[] getAddStock() throws SQLException{
 		AddStock[] result = null;

@@ -371,9 +371,39 @@ public class Database {
 		if (rs.next()){
 			count = rs.getInt("jml_resep");
 		}
-
 		return count;
+	}
 
+	public int countGetAllResep() throws SQLException {
+		int count = 0;
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT DISTINCT id_coklat FROM resep";
+		
+		ResultSet rs = stmt.executeQuery(command);
+
+		if (rs.next()){
+			count++;
+		}
+		return count;
+	}
+
+	public Resep[] getAllResep() throws SQLException {
+		Connection conn = getConnection();
+		Statement stmt = conn.createStatement();
+		String command = "SELECT DISTINCT id_coklat FROM resep";
+		
+		ResultSet rs = stmt.executeQuery(command);
+
+		Resep[] arrayOfResep = new Resep[this.countGetAllResep()];
+
+		int i = 0;
+		while(rs.next()){
+			arrayOfResep[i] = new Resep();
+			arrayOfResep[i] = this.getResep(rs.getInt("id_coklat"));
+			i++;
+		}
+		return arrayOfResep;
 	}
 
 	public Resep getResep(int id_coklat) throws SQLException {
@@ -476,9 +506,7 @@ public class Database {
 			canchange = this.checkBahan(bhn.getNama(), bhn.getJumlah() * jumlah);
 			i ++;
 		}
-		return canchange;
-		
-		
+		return canchange;		
 	}
 	
 	public boolean checkBahan(String namabahan, int jumlah) throws SQLException{
