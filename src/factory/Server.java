@@ -266,13 +266,25 @@ public class Server {
 	}
 	
 	@WebMethod
-	public void changeStatusAddStockToDeliv(int idAddStock) throws SQLException {
+	public void changeStatusAddStockToReceived(int idAddStock) throws SQLException {
 		try {
 			db.changeStatusAddStockToReceived(idAddStock);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@WebMethod
+	public boolean isThereAnyPending() throws SQLException{
+		boolean res = true;
+		try {
+			res = db.isThereAnyPending();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
 	}
 	
 	

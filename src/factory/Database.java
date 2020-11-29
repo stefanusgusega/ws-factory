@@ -150,7 +150,20 @@ public class Database {
 		PreparedStatement preparedStmt = conn.prepareStatement(command);
 		preparedStmt.setInt(1, idAddStock);
 		preparedStmt.execute();
+		
 		conn.close();
+	}
+	
+	public boolean isThereAnyPending() throws SQLException {
+		Connection conn = getConnection();
+		String cmd = "SELECT * FROM add_stock WHERE status = 'pending'";
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery(cmd);
+		boolean isThere = false;
+		if (rs.next()) {
+			isThere = true;
+		}
+		return isThere;
 	}
 
 	public String returnStatusAddStock(int idAddStock) throws SQLException {
